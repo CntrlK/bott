@@ -1,0 +1,101 @@
+import discord
+from bot_logic import gen_pass
+from discord.ext import commands
+import os
+import random
+import requests
+from bote import soluciones
+
+
+# La variable intents almacena los privilegios del bot
+intents = discord.Intents.default()
+# Activar el privilegio de lectura de mensajes
+intents.message_content = True
+# Crear un bot en la variable cliente y transferirle los privilegios
+bot = commands.Bot(command_prefix= "$",intents=intents)
+
+@bot.event
+async def on_ready():
+    print(f'Hemos iniciado sesión como {bot.user}')
+
+@bot.command()
+async def hello(ctx):
+    await ctx.send('Hi!!')
+
+@bot.command()
+async def botellas_de_plastico(ctx):
+    await ctx.send('Bro, las botellas de plasticos contaminan mucho al medio ambiente pero puedes craftear una linda maceta con una botella, no las tires al piso!')
+
+@bot.command()
+async def cajas_de_carton(ctx):
+    await ctx.send('Bro, las cajas de carton son malas para el ambiente y las puedes reciclar , no es cool contaminar')
+
+@bot.command()
+async def papel(ctx):
+    await ctx.send('Hey!, el papel contamina bastante, No los tires, mejor, hazte un mapa como en minecraft')
+
+@bot.command()
+async def vidrio(ctx):
+    await ctx.send('Hey!, el vidrio es horrible para el ambiente, por que no haces una ventana!?')
+
+@bot.command()
+async def solucion(ctx):
+    await ctx.send(soluciones())
+    
+@bot.command()
+async def bye(ctx):
+    await ctx.send('😔')
+    
+@bot.command()
+async def password(ctx):
+    await ctx.send(gen_pass(10))
+    
+@bot.command()
+async def joined(ctx, member: discord.Member):
+    await ctx.send(f'{member.name} joined {discord.utils.format_dt(member.joined_at)}')
+    
+@bot.command()
+async def meme(ctx):
+    with open("c:/Usuarios/Carlos/Descargas/python pro/bot_dis/images/mem1.jpg", "rb") as f:
+        picture = discord.File(f)
+    await ctx.send(file=picture)
+    
+@bot.command()
+async def memea(ctx):
+    meme_a = random.choice(os.listdir("c:/Usuarios/Carlos/Descargas/python pro/bot dis/images"))
+
+
+    
+    with open(f"c:/Usuarios/Carlos/Descargas/python pro/bot_dis/images/mem1.jpg{meme_a}", "rb") as f:
+        picture = discord.File(f)
+    await ctx.send(file=picture)
+    
+def get_duck_image_url():    
+    url = 'https://random-d.uk/api/random'
+    res = requests.get(url)
+    data = res.json()
+    return data['url']
+
+
+@bot.command('duck')
+async def duck(ctx):
+    '''Una vez que llamamos al comando duck, 
+    el programa llama a la función get_duck_image_url'''
+    image_url = get_duck_image_url()
+    await ctx.send(image_url)
+
+def get_meme_image_url():    
+    url = 'https://api.imgflip.com/get_memes'
+    res = requests.get(url)
+    data = res.json()
+    return data['url']
+
+
+@bot.command('memes')
+async def memes(ctx):
+    '''Una vez que llamamos al comando memes, 
+    el programa llama a la función get_memes_image_url'''
+    image_url = get_meme_image_url()
+    await ctx.send(image_url)
+
+bot.run("token")
